@@ -2,6 +2,12 @@
 
 from sys import argv, exit
 import importlib
+import os
+
+from mako.template import Template
+
+TEMPLATE_DIR = './template'
+MAIN_FILE = 'main.py'
 
 
 def usage():
@@ -17,7 +23,10 @@ def check_num_args(number_of_args: int):
 
 def create_task(task_num: str):
     print(f'Creating task {task_num}...')
-    raise NotImplementedError()
+    task_template = Template(filename=f'{TEMPLATE_DIR}/{MAIN_FILE}')
+    os.makedirs(f'./{task_num}', exist_ok=True)
+    with open(f'./{task_num}/{MAIN_FILE}', 'w') as fd:
+        fd.write(task_template.render())
 
 
 def run_task(task_num: str, subtask_num: str = ''):
