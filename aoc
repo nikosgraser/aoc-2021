@@ -30,7 +30,7 @@ def create_task(task_num: str):
 
 
 def run_task(task_num: str, subtask_num: str = ''):
-    print(f'Executing exercise {task_num}...')
+    print(f'Executing task {task_num}{subtask_num}...')
     task = importlib.import_module(f'{task_num}.main')
     if subtask_num.lower() == 'a':
         task.run_a()
