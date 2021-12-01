@@ -5,9 +5,10 @@ name = "pypi"
 
 [packages]
 mako = "*"
-black = "*"
+pre-commit = "*"
 
 [dev-packages]
+black = "*"
 
 [requires]
 python_version = "3.8"
