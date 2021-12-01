@@ -1,0 +1,49 @@
+#!/bin/env python3
+
+from sys import argv, exit
+import importlib
+
+
+def usage():
+    print('Usage:')
+    print(f'\t{argv[0]} [create] <number>')
+    exit(1)
+
+
+def check_num_args(number_of_args: int):
+    if len(argv) - 1 != number_of_args:
+        usage()
+
+
+def create_task(task_num: str):
+    print(f'Creating task {task_num}...')
+    raise NotImplementedError()
+
+
+def run_task(task_num: str, subtask_num: str = ''):
+    print(f'Executing exercise {task_num}...')
+    task = importlib.import_module(f'{task_num}.main')
+    if subtask_num.lower() == 'a':
+        task.run_a()
+    elif subtask_num.lower() == 'b':
+        task.run_b()
+    else:
+        task.run()
+
+
+def main():
+    if len(argv) < 2:
+        usage()
+    if 'create'.startswith(argv[1]):
+        check_num_args(2)
+        create_task(argv[2].zfill(2))
+    elif argv[1].isnumeric():
+        subtask_num = ''
+        if len(argv) > 2:
+            subtask_num = argv[2]
+        run_task(argv[1].zfill(2), subtask_num)
+    else:
+        usage()
+
+
+main()
