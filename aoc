@@ -4,10 +4,13 @@ from sys import argv, exit
 import importlib
 import os
 
+from typing import Callable
+
 from mako.template import Template
 
 TEMPLATE_DIR = './template'
 MAIN_FILE = 'main.py'
+INPUT_FILE = 'input.txt'
 
 
 def usage():
@@ -26,18 +29,36 @@ def create_task(task_num: str):
     task_template = Template(filename=f'{TEMPLATE_DIR}/{MAIN_FILE}')
     os.makedirs(f'./{task_num}', exist_ok=True)
     with open(f'./{task_num}/{MAIN_FILE}', 'w') as fd:
-        fd.write(task_template.render())
+        fd.write(task_template.render(task_num=task_num))
+    with open(f'./{task_num}/{INPUT_FILE}', 'w') as fd:
+        fd.write('')
+
+
+def run_if_implemented(callback: Callable, name: str):
+    try:
+        callback()
+    except NotImplementedError:
+        print(f'Oops, looks like {name} is not implemented yet!')
+
+
+def import_if_exists(task_num: str):
+    try:
+        return importlib.import_module(f'{task_num}.main')
+    except ModuleNotFoundError:
+        print(f'Oops, looks like task {task_num} was not created yet!')
+        print(f'Create it with {argv[0]} create {task_num}.')
+        exit(1)
 
 
 def run_task(task_num: str, subtask_num: str = ''):
     print(f'Executing task {task_num}{subtask_num}...')
-    task = importlib.import_module(f'{task_num}.main')
+    task = import_if_exists(task_num)
     if subtask_num.lower() == 'a':
-        task.run_a()
+        run_if_implemented(lambda: task.run_a(), f'task {task_num}a')
     elif subtask_num.lower() == 'b':
-        task.run_b()
+        run_if_implemented(lambda: task.run_b(), f'task {task_num}b')
     else:
-        task.run()
+        run_if_implemented(lambda: task.run(), f'task {task_num}')
 
 
 def main():
@@ -55,4 +76,5 @@ def main():
         usage()
 
 
-main()
+if __name__ == '__main__':
+    main()
