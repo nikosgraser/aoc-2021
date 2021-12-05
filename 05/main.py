@@ -8,26 +8,22 @@ class Grid:
     def __init__(self):
         self._grid: Dict[Coordinate, int] = defaultdict(int)
 
-    def add_line_hv(self, start: Coordinate, end: Coordinate, axis: int):
-        for step in range(start[axis], end[axis] + 1):
-            step_coordinate = [-1, -1]
-            step_coordinate[axis] = step
-            step_coordinate[(axis + 1) % 2] = start[(axis + 1) % 2]
-            self._grid[tuple(step_coordinate)] += 1
-
-    def add_line(self, start: Coordinate, end: Coordinate):
-        if start[0] == end[0]:
-            axis = 1
-        elif start[1] == end[1]:
-            axis = 0
-        else:
+    def add_line(self, start: Coordinate, end: Coordinate, allow_diagonal=False):
+        if start[0] != end[0] and start[1] != end[1] and not allow_diagonal:
             return
-        if start[axis] > end[axis]:
-            start, end = end, start
-        self.add_line_hv(start, end, axis)
+        step0, step1 = cmp(start[0], end[0]), cmp(start[1], end[1])
+        current = start
+        while current != end:
+            self._grid[current] += 1
+            current = (current[0] + step0, current[1] + step1)
+        self._grid[end] += 1
 
     def num_coordinates_with_overlapping_lines(self) -> int:
         return sum(1 for k, v in self._grid.items() if v > 1)
+
+
+def cmp(a: int, b: int) -> int:
+    return 0 if a == b else (b - a) // (abs(b - a))
 
 
 def read_input():
@@ -45,20 +41,25 @@ def parse_line(line: str) -> Tuple[Coordinate, Coordinate]:
     return parse_coordinate(start_and_end[0]), parse_coordinate(start_and_end[1])
 
 
+def parse_input(allow_diagonal: bool) -> Grid:
+    grid = Grid()
+    lines = read_input()
+    for line in lines:
+        start, end = parse_line(line)
+        grid.add_line(start, end, allow_diagonal)
+    return grid
+
+
 def run():
     run_a()
     run_b()
 
 
 def run_a():
-    grid = Grid()
-    lines = read_input()
-    for line in lines:
-        start, end = parse_line(line)
-        grid.add_line(start, end)
+    grid = parse_input(False)
     print(grid.num_coordinates_with_overlapping_lines())
 
 
 def run_b():
-    # Implementation starts here
-    raise NotImplementedError()
+    grid = parse_input(True)
+    print(grid.num_coordinates_with_overlapping_lines())
