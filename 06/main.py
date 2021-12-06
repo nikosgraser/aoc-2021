@@ -61,14 +61,16 @@ def run_a():
 
 
 def run_b():
-    """When the direct modeling no longer scales, we need to kill each fish's indiduality :("""
+    """When the direct modeling no longer scales, we need to kill each fish's individuality :("""
     school = parse_input()
-    fish_by_age: Dict[int, int] = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0}
+    fish_by_timer: Dict[int, int] = {timer: 0 for timer in range(Lanternfish.cycling_time_young)}
     for fish in school.fish:
-        fish_by_age[fish.timer] += 1
+        fish_by_timer[fish.timer] += 1
     for _ in range(256):
-        next_fish_by_age: Dict[int, int] = {8: fish_by_age[0], 7: fish_by_age[8], 6: fish_by_age[7] + fish_by_age[0]}
-        for i in range(6):
-            next_fish_by_age[i] = fish_by_age[i + 1]
-        fish_by_age = next_fish_by_age
-    print(sum(v for k, v in fish_by_age.items()))
+        fish_that_spawn = fish_by_timer[0]
+        fish_by_timer = {
+            timer: fish_by_timer[(timer + 1) % Lanternfish.cycling_time_young]
+            for timer in range(Lanternfish.cycling_time_young)
+        }
+        fish_by_timer[Lanternfish.cycling_time - 1] += fish_that_spawn
+    print(sum(fish_by_timer.values()))
