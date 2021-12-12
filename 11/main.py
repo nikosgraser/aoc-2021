@@ -30,12 +30,10 @@ class OctopusGrid:
     def __init__(self):
         self._map: Dict[Coordinate, Union[Octopus, None]] = defaultdict(lambda: None)
         self._num_rows = 0
-        self._width = 0
         self.num_flashes = 0
 
     def add_row(self, row: str):
-        self._width = len(row)
-        for i in range(self._width):
+        for i in range(len(row)):
             self._map[self._num_rows, i] = Octopus(int(row[i]))
         self._num_rows += 1
 
