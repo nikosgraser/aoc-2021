@@ -93,5 +93,4 @@ def run_a():
 
 def run_b():
     graph = parse_input()
-    paths = graph.find_all_paths(double_visit_allowed=True)
-    print(len(paths))
+    print(len(graph.find_all_paths(double_visit_allowed=True)))
