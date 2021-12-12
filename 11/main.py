@@ -66,6 +66,7 @@ class OctopusGrid:
             if self._map[coordinate].pulse():
                 self.flash_at(coordinate)
         if all(self._map[c].flashed for c in coordinates):
+            # don't bother with resetting in this case since we never want to simulate beyond this point anyway
             return True
         for coordinate in coordinates.copy():
             self._map[coordinate].reset()
