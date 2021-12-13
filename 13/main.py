@@ -22,7 +22,7 @@ class Grid:
         representation = ""
         for y in range(min_y, max_y + 1):
             for x in range(min_x, max_x + 1):
-                representation += "#" if self._grid[(x, y)] else " "
+                representation += "█" if self._grid[(x, y)] else " "
             representation += "\n"
         return representation
 
